@@ -1,0 +1,216 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { ShieldCheck, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useStore } from "@/components/store-context";
+import { products, lineInfo, money, pageHead } from "@/lib/catalog";
+import { placeOrder } from "@/lib/store.functions";
+export const Route = createFileRoute("/checkout")({
+  head: () =>
+    pageHead(
+      "Đặt hàng",
+      "Điền thông tin giao hàng và lưu đơn kính AuraLens với thanh toán khi nhận hàng.",
+    ),
+  component: Checkout,
+});
+function Checkout() {
+  const { user, cart, clear } = useStore();
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [order, setOrder] = useState("");
+  const orderFn = useServerFn(placeOrder);
+  const total = cart.reduce((s, i) => {
+    const p = products.find((p) => p.id === i.productId);
+    return s + (p ? lineInfo[p.line].price * i.quantity : 0);
+  }, 0);
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!user) return;
+    const f = new FormData(e.currentTarget);
+    setBusy(true);
+    try {
+      const o = await orderFn({
+        data: {
+          items: cart.map((i) => ({
+            productId: i.productId,
+            prescription: i.prescription,
+            quantity: i.quantity,
+          })),
+          full_name: String(f.get("name")),
+          phone: String(f.get("phone")),
+          address: String(f.get("address")),
+          payment_method: "cod",
+        },
+      });
+      setOrder(o.id);
+      clear();
+      toast.success("Đã lưu đơn hàng của bạn.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Không thể đặt hàng.");
+    } finally {
+      setBusy(false);
+    }
+  }
+  if (order)
+    return (
+      <main className="container-main page-body">
+        <div className="empty-state">
+          <CheckCircle2 className="text-success" />
+          <h2>Đơn hàng đã được ghi nhận.</h2>
+          <p className="text-muted-foreground text-xs mb-4">
+            Mã đơn: {order.slice(0, 8).toUpperCase()} · Chờ xác nhận · Chưa thanh toán
+          </p>
+          <Button asChild>
+            <Link to="/tracking">Theo dõi đơn hàng</Link>
+          </Button>
+        </div>
+      </main>
+    );
+  return (
+    <main className="container-main page-body">
+      <div className="eyebrow">HOÀN TẤT LỰA CHỌN</div>
+      <h1 className="page-title">Đặt hàng AuraLens.</h1>
+      {!cart.length ? (
+        <div className="empty-state">
+          <p>Giỏ hàng chưa có sản phẩm.</p>
+          <Button asChild>
+            <Link to="/shop">Chọn kính</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="checkout-grid mt-8">
+          <div>
+            {!user ? (
+              <div className="border-b pb-6 mb-6">
+                <h2 className="font-semibold mb-3">Đăng nhập để lưu và theo dõi đơn hàng</h2>
+                <Button asChild>
+                  <Link to="/account">Đăng nhập / Đăng ký</Link>
+                </Button>
+              </div>
+            ) : null}
+            <form onSubmit={submit}>
+              <h2 className="text-xl font-semibold mb-6">Thông tin nhận hàng</h2>
+              <label className="form-field">
+                Họ và tên
+                <input
+                  name="name"
+                  required
+                  minLength={2}
+                  autoComplete="name"
+                  placeholder="Họ và tên người nhận"
+                />
+              </label>
+              <label className="form-field">
+                Số điện thoại
+                <input
+                  name="phone"
+                  required
+                  pattern="(\+84|0)[0-9]{9,10}"
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="Số điện thoại nhận hàng"
+                />
+              </label>
+              <label className="form-field">
+                Địa chỉ chi tiết
+                <textarea
+                  name="address"
+                  required
+                  minLength={10}
+                  autoComplete="street-address"
+                  placeholder="Số nhà, đường, phường/xã, tỉnh/thành phố"
+                  rows={3}
+                />
+              </label>
+              <h2 className="text-xl font-semibold mt-8 mb-5">Phương thức thanh toán</h2>
+              <label className="flex gap-3 items-center border rounded-lg p-4 text-xs">
+                <input type="radio" checked readOnly name="payment" />
+                Thanh toán khi nhận hàng (COD)
+              </label>
+              <div className="grid grid-cols-2 gap-3 mt-3 text-[11px] text-muted-foreground">
+                {["Visa / Mastercard", "ATM nội địa", "VNPay QR", "MoMo QR"].map((v) => (
+                  <div key={v} className="border rounded-md p-3 opacity-70">
+                    {v}
+                    <span className="block text-[9px] mt-2">Chưa kết nối</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-muted-foreground leading-6 mt-4">
+                Bản thử nghiệm: đơn được lưu ở trạng thái chờ xác nhận, chưa thu tiền và chưa gửi
+                vận chuyển.
+              </p>
+              <Button disabled={!user || busy} className="w-full mt-6 h-11" type="submit">
+                {busy ? "Đang lưu đơn hàng…" : "Xác nhận đặt hàng COD"}
+              </Button>
+            </form>
+          </div>
+          <aside className="order-summary">
+            <h2 className="text-lg font-semibold">Đơn hàng của bạn</h2>
+            {cart.map((i) => {
+              const p = products.find((p) => p.id === i.productId);
+              if (!p) return null;
+              return (
+                <div key={i.id} className="cart-item">
+                  <img src={p.image} alt={p.name} />
+                  <div>
+                    <h3>{p.name}</h3>
+                    <p>
+                      Số lượng: {i.quantity} · {i.prescription.toFixed(2)} D
+                    </p>
+                    <b className="text-xs">{money(lineInfo[p.line].price * i.quantity)}</b>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="flex mt-5 gap-2">
+              <input
+                aria-label="Mã giảm giá"
+                placeholder="Mã giảm giá"
+                className="border rounded-md p-2 bg-background min-w-0 flex-1 text-xs"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <Button
+                variant="outline"
+                onClick={() =>
+                  toast.info(
+                    code
+                      ? "Mã chưa được xác thực. Vui lòng hỏi Aura AI về ưu đãi sinh viên."
+                      : "Vui lòng nhập mã giảm giá.",
+                  )
+                }
+              >
+                Áp dụng
+              </Button>
+            </div>
+            <div className="summary-row">
+              <span>Tạm tính</span>
+              <b>{money(total)}</b>
+            </div>
+            <div className="summary-row">
+              <span>Phí vận chuyển dự kiến</span>
+              <span>0 ₫</span>
+            </div>
+            <div className="summary-row">
+              <span>Giao hàng dự kiến</span>
+              <span>3–5 ngày làm việc*</span>
+            </div>
+            <div className="summary-row border-t pt-4">
+              <b>Tổng dự kiến</b>
+              <b>{money(total)}</b>
+            </div>
+            <p className="text-[9px] text-muted-foreground leading-5">
+              *Mốc giao hàng và phí vận chuyển minh họa, cần xác nhận trước khi giao.
+            </p>
+            <p className="flex gap-2 text-[10px] text-muted-foreground mt-5">
+              <ShieldCheck size={14} />
+              Thông tin của bạn được bảo vệ.
+            </p>
+          </aside>
+        </div>
+      )}
+    </main>
+  );
+}
