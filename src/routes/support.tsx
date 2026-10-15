@@ -1,3 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router';import { pageHead } from '@/lib/catalog';
-export const Route=createFileRoute('/support')({head:()=>pageHead('Liên hệ & hỗ trợ','Tư vấn chọn kính AuraLens Pro và Lite, đặt hàng và giải đáp ưu đãi.'),component:Support});
-function Support(){return <main className="container-main page-body"><div className="eyebrow">LUÔN BÊN BẠN</div><h1 className="page-title">Chăm sóc khách hàng.</h1><div className="max-w-2xl text-sm leading-8 text-muted-foreground"><p>Tư vấn trực tuyến cùng Aura AI về dòng kính, kiểu gọng, độ cận và ưu đãi sinh viên.</p><h2 className="font-semibold text-foreground mt-8">Thông tin liên hệ</h2><p>Hotline, email hỗ trợ, địa chỉ công ty và mạng xã hội đang chờ thông tin chính thức từ AuraLens.</p></div></main>}
+import { createFileRoute } from "@tanstack/react-router";
+import { pageHead } from "@/lib/catalog";
+export const Route = createFileRoute("/support")({
+  head: () =>
+    pageHead(
+      "Liên hệ & hỗ trợ",
+      "Tư vấn chọn kính AuraLens Pro và Lite, đặt hàng và giải đáp ưu đãi.",
+    ),
+  component: Support,
+});
+function Support() {
+  return (
+    <main className="container-main page-body">
+      <div className="eyebrow">LUÔN BÊN BẠN</div>
+      <h1 className="page-title">Chăm sóc khách hàng.</h1>
+      <div className="max-w-2xl text-sm leading-8 text-muted-foreground">
+        <p>Tư vấn trực tuyến cùng Aura AI về dòng kính, kiểu gọng, độ cận và ưu đãi sinh viên.</p>
+        <h2 className="font-semibold text-foreground mt-8">Thông tin liên hệ</h2>
+        <p>
+          Hotline, email hỗ trợ, địa chỉ công ty và mạng xã hội đang chờ thông tin chính thức từ
+          AuraLens.
+        </p>
+      </div>
+    </main>
+  );
+}
