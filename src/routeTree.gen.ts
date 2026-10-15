@@ -10,9 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as PoliciesRouteImport } from './routes/policies'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TechnologyRouteImport } from './routes/technology'
+import { Route as TrackingRouteImport } from './routes/tracking'
 import { Route as ProductLineRouteImport } from './routes/product.$line'
 
 const IndexRoute = IndexRouteImport.update({
@@ -20,9 +27,34 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliciesRoute = PoliciesRouteImport.update({
+  id: '/policies',
+  path: '/policies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -30,9 +62,19 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TechnologyRoute = TechnologyRouteImport.update({
   id: '/technology',
   path: '/technology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackingRoute = TrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductLineRoute = ProductLineRouteImport.update({
@@ -43,39 +85,104 @@ const ProductLineRoute = ProductLineRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/gallery': typeof GalleryRoute
+  '/policies': typeof PoliciesRoute
+  '/reviews': typeof ReviewsRoute
   '/shop': typeof ShopRoute
+  '/support': typeof SupportRoute
   '/technology': typeof TechnologyRoute
+  '/tracking': typeof TrackingRoute
   '/product/$line': typeof ProductLineRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/gallery': typeof GalleryRoute
+  '/policies': typeof PoliciesRoute
+  '/reviews': typeof ReviewsRoute
   '/shop': typeof ShopRoute
+  '/support': typeof SupportRoute
   '/technology': typeof TechnologyRoute
+  '/tracking': typeof TrackingRoute
   '/product/$line': typeof ProductLineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/gallery': typeof GalleryRoute
+  '/policies': typeof PoliciesRoute
+  '/reviews': typeof ReviewsRoute
   '/shop': typeof ShopRoute
+  '/support': typeof SupportRoute
   '/technology': typeof TechnologyRoute
+  '/tracking': typeof TrackingRoute
   '/product/$line': typeof ProductLineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gallery' | '/shop' | '/technology' | '/product/$line'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/cart'
+    | '/checkout'
+    | '/gallery'
+    | '/policies'
+    | '/reviews'
+    | '/shop'
+    | '/support'
+    | '/technology'
+    | '/tracking'
+    | '/product/$line'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gallery' | '/shop' | '/technology' | '/product/$line'
-  id: '__root__' | '/' | '/gallery' | '/shop' | '/technology' | '/product/$line'
+  to:
+    | '/'
+    | '/account'
+    | '/cart'
+    | '/checkout'
+    | '/gallery'
+    | '/policies'
+    | '/reviews'
+    | '/shop'
+    | '/support'
+    | '/technology'
+    | '/tracking'
+    | '/product/$line'
+  id:
+    | '__root__'
+    | '/'
+    | '/account'
+    | '/cart'
+    | '/checkout'
+    | '/gallery'
+    | '/policies'
+    | '/reviews'
+    | '/shop'
+    | '/support'
+    | '/technology'
+    | '/tracking'
+    | '/product/$line'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
   GalleryRoute: typeof GalleryRoute
+  PoliciesRoute: typeof PoliciesRoute
+  ReviewsRoute: typeof ReviewsRoute
   ShopRoute: typeof ShopRoute
+  SupportRoute: typeof SupportRoute
   TechnologyRoute: typeof TechnologyRoute
+  TrackingRoute: typeof TrackingRoute
   ProductLineRoute: typeof ProductLineRoute
 }
 
@@ -88,11 +195,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gallery': {
       id: '/gallery'
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/policies': {
+      id: '/policies'
+      path: '/policies'
+      fullPath: '/policies'
+      preLoaderRoute: typeof PoliciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -102,11 +244,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/technology': {
       id: '/technology'
       path: '/technology'
       fullPath: '/technology'
       preLoaderRoute: typeof TechnologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tracking': {
+      id: '/tracking'
+      path: '/tracking'
+      fullPath: '/tracking'
+      preLoaderRoute: typeof TrackingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$line': {
@@ -121,9 +277,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
   GalleryRoute: GalleryRoute,
+  PoliciesRoute: PoliciesRoute,
+  ReviewsRoute: ReviewsRoute,
   ShopRoute: ShopRoute,
+  SupportRoute: SupportRoute,
   TechnologyRoute: TechnologyRoute,
+  TrackingRoute: TrackingRoute,
   ProductLineRoute: ProductLineRoute,
 }
 export const routeTree = rootRouteImport
