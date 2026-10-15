@@ -15,6 +15,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
+  const [guestReady, setGuestReady] = useState(false);
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('auralens-guest-cart');
+      if (saved) setCart(JSON.parse(saved));
+    } catch { sessionStorage.removeItem('auralens-guest-cart'); }
+    setGuestReady(true);
+  }, []);
+  useEffect(() => {
+    if (guestReady) sessionStorage.setItem('auralens-guest-cart', JSON.stringify(cart));
+  }, [cart, guestReady]);
   useEffect(() => {
     let active = true;
     supabase.auth.getUser().then(({ data }) => {

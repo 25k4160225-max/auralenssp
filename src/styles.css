@@ -201,7 +201,7 @@ button {
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1.7px;
+  letter-spacing: 0;
   margin-bottom: 23px;
 }
 .eyebrow-dot {
@@ -215,6 +215,9 @@ button {
   line-height: 1.1;
   font-weight: 750;
   margin: 0 0 25px;
+}
+@media (min-width: 768px) {
+  .hero-photo { width: 80%; left: 30%; object-fit: cover; }
 }
 .hero h1 span {
   color: var(--primary);
