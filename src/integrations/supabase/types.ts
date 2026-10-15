@@ -14,7 +14,131 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      carts: {
+        Row: {
+          items: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          items?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          items?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          address: string
+          created_at: string
+          full_name: string
+          id: string
+          items: Json
+          payment_method: string
+          phone: string
+          status: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          full_name: string
+          id?: string
+          items: Json
+          payment_method?: string
+          phone: string
+          status?: string
+          total: number
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          items?: Json
+          payment_method?: string
+          phone?: string
+          status?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string
+          birthday: string | null
+          full_name: string
+          id: string
+          phone: string
+          prescription: number
+        }
+        Insert: {
+          address?: string
+          birthday?: string | null
+          full_name?: string
+          id: string
+          phone?: string
+          prescription?: number
+        }
+        Update: {
+          address?: string
+          birthday?: string | null
+          full_name?: string
+          id?: string
+          phone?: string
+          prescription?: number
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          content: string
+          created_at: string
+          display_name: string
+          id: string
+          order_id: string
+          product_line: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          order_id: string
+          product_line: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          order_id?: string
+          product_line?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
