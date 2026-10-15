@@ -20,6 +20,7 @@ import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TechnologyRouteImport } from './routes/technology'
 import { Route as TrackingRouteImport } from './routes/tracking'
+import { Route as ApiSupportRouteImport } from './routes/api.support'
 import { Route as ProductLineRouteImport } from './routes/product.$line'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,11 @@ const TrackingRoute = TrackingRouteImport.update({
   path: '/tracking',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSupportRoute = ApiSupportRouteImport.update({
+  id: '/api/support',
+  path: '/api/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductLineRoute = ProductLineRouteImport.update({
   id: '/product/$line',
   path: '/product/$line',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/technology': typeof TechnologyRoute
   '/tracking': typeof TrackingRoute
+  '/api/support': typeof ApiSupportRoute
   '/product/$line': typeof ProductLineRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/technology': typeof TechnologyRoute
   '/tracking': typeof TrackingRoute
+  '/api/support': typeof ApiSupportRoute
   '/product/$line': typeof ProductLineRoute
 }
 export interface FileRoutesById {
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/technology': typeof TechnologyRoute
   '/tracking': typeof TrackingRoute
+  '/api/support': typeof ApiSupportRoute
   '/product/$line': typeof ProductLineRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/technology'
     | '/tracking'
+    | '/api/support'
     | '/product/$line'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/technology'
     | '/tracking'
+    | '/api/support'
     | '/product/$line'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/support'
     | '/technology'
     | '/tracking'
+    | '/api/support'
     | '/product/$line'
   fileRoutesById: FileRoutesById
 }
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   SupportRoute: typeof SupportRoute
   TechnologyRoute: typeof TechnologyRoute
   TrackingRoute: typeof TrackingRoute
+  ApiSupportRoute: typeof ApiSupportRoute
   ProductLineRoute: typeof ProductLineRoute
 }
 
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/support': {
+      id: '/api/support'
+      path: '/api/support'
+      fullPath: '/api/support'
+      preLoaderRoute: typeof ApiSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$line': {
       id: '/product/$line'
       path: '/product/$line'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   SupportRoute: SupportRoute,
   TechnologyRoute: TechnologyRoute,
   TrackingRoute: TrackingRoute,
+  ApiSupportRoute: ApiSupportRoute,
   ProductLineRoute: ProductLineRoute,
 }
 export const routeTree = rootRouteImport
