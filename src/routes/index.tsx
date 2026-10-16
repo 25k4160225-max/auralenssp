@@ -85,7 +85,7 @@ function Home() {
           </div>
           <div className="hero-bottom">
             <span>
-              01 <span className="mx-2">──────</span> 02
+     01 <span className="mx-2">──────</span> 02
             </span>
             <span className="flex items-center gap-2">
               CUỘN ĐỂ KHÁM PHÁ
@@ -212,21 +212,29 @@ function Home() {
           </Link>
         </div>
       </section>
-              {/* --- PHẦN ĐÁNH GIÁ KHÁCH HÀNG & LIÊN HỆ BỔ SUNG --- */}
-        <section className="py-12 bg-slate-50 px-4 text-center my-8 rounded-2xl max-w-4xl mx-auto border border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Đánh giá từ khách hàng</h2>
-          <div className="bg-white p-6 rounded-2xl shadow-sm max-w-md mx-auto border border-slate-100 mb-8">
-            <div className="flex justify-between items-center mb-3">
-              <span className="font-bold text-slate-900">@caubequakhu</span>
-              <span className="text-amber-500 font-semibold bg-amber-50 px-2.5 py-1 rounded-full text-xs">⭐ 4.5/5</span>
-            </div>
-            <p className="text-slate-600 text-sm italic leading-relaxed">
-              "Sản phẩm tuyệt vời quá đeo vào như đang ở tương lai v, nhìn thấy mọi thứ nhưng không thấy được tiếng lòng của em"
-            </p>
-          </div>
+              </div>
+      </section>
 
-          <div className="border-t border-slate-200 pt-6 flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-slate-700">
-            <p>📞 Hotline: <strong className="text-slate-900">1900583667</strong></p>
-            <p>📍 Địa chỉ: <strong className="text-slate-900">99 Hồ Đắc Di, Phường An Cựu, Tp Huế</strong></p>
+      {/* --- PHẦN ĐÁNH GIÁ KHÁCH HÀNG & LIÊN HỆ BỔ SUNG --- */}
+      <section className="py-12 bg-slate-50 px-4 text-center my-8 rounded-2xl max-w-4xl mx-auto border border-slate-200">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Đánh giá từ khách hàng</h2>
+        <div className="bg-white p-6 rounded-2xl shadow-sm max-w-md mx-auto border border-slate-100 mb-8">
+          <div className="flex justify-between items-center mb-3">
+            <span className="font-bold text-slate-900">@caubequakhu</span>
+            <span className="text-amber-500 font-semibold bg-amber-50 px-2.5 py-1 rounded-full text-xs">⭐ 4.5/5</span>
           </div>
-        </section>
+          <p className="text-slate-600 text-sm italic leading-relaxed">
+            "Sản phẩm tuyệt vời quá đeo vào như đang ở tương lai v, nhìn thấy mọi thứ nhưng không thấy được tiếng lòng của em"
+          </p>
+        </div>
+
+        <div className="border-t border-slate-200 pt-6 flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-slate-700">
+          <p>📞 Hotline: <strong className="text-slate-900">1900583667</strong></p>
+          <p>📍 Địa chỉ: <strong className="text-slate-900">99 Hồ Đắc Di, Phường An Cựu, Tp Huế</strong></p>
+        </div>
+      </section>
+    </>
+  );
+}
+
+      
