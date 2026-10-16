@@ -9,7 +9,12 @@ import {
   ScanEye,
   Languages,
   ChevronDown,
+  Camera,
+  RefreshCw,
+  Phone,
+  MapPin,
 } from "lucide-react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { LineCard, ProductCard, TechGrid } from "@/components/catalog-ui";
 import { pageHead, products } from "@/lib/catalog";
@@ -27,6 +32,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [statusText, setStatusText] = useState("");
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setIsCameraActive(true);
+      setStatusText("Đang quét tỷ lệ khuôn mặt... Đang phân tích gọng kính phù hợp!");
+    } catch (err) {
+      alert("Không thể truy cập camera. Vui lòng cấp quyền camera trên trình duyệt của bạn.");
+    }
+  };
+
   return (
     <>
       <section className="hero">
@@ -220,7 +242,47 @@ function Home() {
         </div>
       </section>
 
-      {/* --- PHẦN ĐÁNH GIÁ KHÁCH HÀNG & LIÊN HỆ BỔ SUNG --- */}
+      {/* --- PHẦN 1: TÍNH NĂNG BẬT CAMERA QUÉT KHUÔN MẶT --- */}
+      <section className="py-10 px-4 bg-slate-900 text-white text-center my-8 rounded-2xl max-w-4xl mx-auto shadow-xl">
+        <div className="max-w-xl mx-auto">
+          <h2 className="text-2xl font-bold mb-2 text-white">Thử Kính Ảo & Phân Tích Khuôn Mặt</h2>
+          <p className="text-slate-300 text-sm mb-6">
+            Sử dụng camera để nhận diện hình dáng khuôn mặt và gợi ý gọng kính AuraLens phù hợp nhất.
+          </p>
+
+          <div className="relative w-full max-w-md mx-auto aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className={`w-full h-full object-cover ${isCameraActive ? "block" : "hidden"}`}
+            />
+            {!isCameraActive && (
+              <div className="text-slate-500 flex flex-col items-center gap-2 p-4">
+                <Camera className="w-10 h-10 stroke-1" />
+                <span className="text-xs">Camera đang tắt</span>
+              </div>
+            )}
+          </div>
+
+          {statusText && (
+            <p className="mt-3 text-sm font-medium text-emerald-400 flex items-center justify-center gap-2">
+              <RefreshCw className="w-4 h-4 animate-spin" /> {statusText}
+            </p>
+          )}
+
+          {!isCameraActive && (
+            <Button
+              onClick={startCamera}
+              className="mt-6 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-xl"
+            >
+              <Camera className="w-4 h-4 mr-2" /> Bật Camera Quét Khuôn Mặt
+            </Button>
+          )}
+        </div>
+      </section>
+
+      {/* --- PHẦN 2: ĐÁNH GIÁ KHÁCH HÀNG & THÔNG TIN LIÊN HỆ KẾT NỐI --- */}
       <section className="py-12 bg-slate-50 px-4 text-center my-8 rounded-2xl max-w-4xl mx-auto border border-slate-200">
         <h2 className="text-2xl font-bold text-slate-900 mb-6">Đánh giá từ khách hàng</h2>
         <div className="bg-white p-6 rounded-2xl shadow-sm max-w-md mx-auto border border-slate-100 mb-8">
@@ -233,9 +295,17 @@ function Home() {
           </p>
         </div>
 
-        <div className="border-t border-slate-200 pt-6 flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-slate-700">
-          <p>📞 Hotline: <strong className="text-slate-900">1900583667</strong></p>
-          <p>📍 Địa chỉ: <strong className="text-slate-900">99 Hồ Đắc Di, Phường An Cựu, Tp Huế</strong></p>
+        {/* THÔNG TIN LIÊN HỆ & KẾT NỐI VỚI CHÚNG TÔI */}
+        <div className="border-t border-slate-200 pt-6">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">Kết nối với chúng tôi</h3>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-slate-700">
+            <p className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-blue-600" /> Hotline: <strong className="text-slate-900">1900583667</strong>
+            </p>
+            <p className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-blue-600" /> Địa chỉ: <strong className="text-slate-900">99 Hồ Đắc Di, Phường An Cựu, Tp Huế</strong>
+            </p>
+          </div>
         </div>
       </section>
     </>
