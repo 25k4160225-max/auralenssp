@@ -215,3 +215,137 @@ function Home() {
     </>
   );
 }
+import { Phone, MapPin } from 'lucide-react';
+
+export const FooterContact = () => {
+  return (
+    <footer className="bg-slate-900 text-slate-200 py-8 px-4 border-t border-slate-800">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+        {/* Thông tin thương hiệu */}
+        <div>
+          <h3 className="text-xl font-bold text-white mb-2">AuraLens</h3>
+          <p className="text-sm text-slate-400">Tầm nhìn mới. Khả năng mới.</p>
+        </div>
+
+        {/* Thông tin liên hệ */}
+        <div className="flex flex-col sm:flex-row gap-6 text-sm">
+          <div className="flex items-center justify-center md:justify-start gap-2">
+            <Phone className="w-4 h-4 text-blue-400" />
+            <span>Hotline: <strong className="text-white">1900583667</strong></span>
+          </div>
+          <div className="flex items-center justify-center md:justify-start gap-2">
+            <MapPin className="w-4 h-4 text-blue-400" />
+            <span>Địa chỉ: <strong className="text-white">99 Hồ Đắc Di, Phường An Cựu, Tp Huế</strong></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+import { Star } from 'lucide-react';
+
+export const CustomerReviews = () => {
+  return (
+    <section className="py-12 bg-slate-50 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-2xl font-bold text-center text-slate-900 mb-8">
+          Đánh giá từ khách hàng
+        </h2>
+
+        {/* Thẻ đánh giá của @caubequakhu */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 max-w-md mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h4 className="font-semibold text-slate-900">@caubequakhu</h4>
+              <p className="text-xs text-slate-500">Khách hàng đã mua hàng</p>
+            </div>
+            
+            {/* Hiển thị 4.5 sao */}
+            <div className="flex items-center gap-1 text-amber-400 bg-amber-50 px-2.5 py-1 rounded-full text-xs font-semibold">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 opacity-50" />
+              <span className="text-slate-700 ml-1">4.5</span>
+            </div>
+          </div>
+
+          <p className="text-slate-600 text-sm leading-relaxed italic">
+            "Sản phẩm tuyệt vời quá đeo vào như đang ở tương lai v, nhìn thấy mọi thứ nhưng không thấy được tiếng lòng của em"
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+import React, { useState, useRef } from 'react';
+import { Camera, RefreshCw } from 'lucide-react';
+
+export const CameraFaceScanner = () => {
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [statusText, setStatusText] = useState('');
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setIsCameraActive(true);
+      setStatusText('Đang quét tỷ lệ khuôn mặt... Đang phân tích gọng kính phù hợp!');
+    } catch (err) {
+      alert('Không thể truy cập camera. Vui lòng cấp quyền camera trên trình duyệt của bạn.');
+    }
+  };
+
+  return (
+    <section className="py-12 px-4 bg-white text-center">
+      <div className="max-w-xl mx-auto">
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Thử Kính Ảo & Phân Tích Khuôn Mặt</h2>
+        <p className="text-slate-600 text-sm mb-6">
+          Sử dụng camera để nhận diện hình dáng khuôn mặt và tìm gọng kính chuẩn nhất với bạn.
+        </p>
+
+        {/* Khung hiển thị Video từ Camera */}
+        <div className="relative w-full max-w-md mx-auto aspect-video bg-slate-900 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border-2 border-slate-200">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            className={`w-full h-full object-cover ${isCameraActive ? 'block' : 'hidden'}`}
+          />
+          {!isCameraActive && (
+            <div className="text-slate-400 flex flex-col items-center gap-2 p-4">
+              <Camera className="w-10 h-10 stroke-1" />
+              <span className="text-xs">Chưa bật camera</span>
+            </div>
+          )}
+        </div>
+
+        {/* Trạng thái quét */}
+        {statusText && (
+          <p className="mt-3 text-sm font-medium text-emerald-600 flex items-center justify-center gap-2">
+            <RefreshCw className="w-4 h-4 animate-spin" /> {statusText}
+          </p>
+        )}
+
+        {/* Nút bật Camera */}
+        {!isCameraActive && (
+          <button
+            onClick={startCamera}
+            className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-xl transition-all shadow-md flex items-center gap-2 mx-auto"
+          >
+            <Camera className="w-4 h-4" /> Bật Camera Quét Khuôn Mặt
+          </button>
+        )}
+      </div>
+    </section>
+  );
+};
+import { FooterContact } from '../components/FooterContact';
+import { CustomerReviews } from '../components/CustomerReviews';
+import { CameraFaceScanner } from '../components/CameraFaceScanner';
+
+
