@@ -23,4 +23,46 @@ git clone <this-repository-url>
 cd <repository-name>
 npm i
 npm run dev
+<!-- Giao diện Camera -->
+<div style="text-align: center; margin: 30px; font-family: sans-serif;">
+    <h3>Quét khuôn mặt để chọn gọng kính</h3>
+    <p>Vui lòng cấp quyền camera để chúng tôi phân tích tỷ lệ khuôn mặt của bạn.</p>
+    
+    <!-- Khung hiển thị Camera -->
+    <video id="webcam" autoplay playsinline style="width: 100%; max-width: 400px; border-radius: 12px; border: 2px solid #ccc; background: #000;"></video>
+    <br>
+    <button id="start-camera" style="margin-top: 15px; padding: 10px 20px; background: #000; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
+        Bật Camera
+    </button>
+    <p id="camera-status" style="color: #666; margin-top: 10px; font-weight: bold;"></p>
+</div>
+
+<!-- Script xử lý Camera -->
+<script>
+    const videoElement = document.getElementById('webcam');
+    const startBtn = document.getElementById('start-camera');
+    const statusText = document.getElementById('camera-status');
+
+    startBtn.addEventListener('click', async () => {
+        try {
+            // Yêu cầu quyền truy cập Camera
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoElement.srcObject = stream;
+            
+            // Đổi text trạng thái
+            startBtn.style.display = 'none'; // Ẩn nút sau khi bật
+            statusText.style.color = 'green';
+            statusText.innerText = "Đang quét và phân tích tỷ lệ khuôn mặt... Đang tìm gọng kính phù hợp!";
+            
+            // Ở đây bạn có thể chèn thêm thư viện Face API để đo đạc thực tế
+            
+        } catch (err) {
+            statusText.style.color = 'red';
+            statusText.innerText = "Lỗi: Bạn đã từ chối quyền truy cập camera hoặc thiết bị không có camera.";
+            console.error("Camera error:", err);
+        }
+    });
+</script>
+
 ```
+
