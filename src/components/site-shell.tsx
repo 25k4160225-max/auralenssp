@@ -127,7 +127,7 @@ export function SiteFooter() {
             <h3>Kết nối với chúng tôi</h3>
             <p>Tư vấn trực tuyến cùng Aura AI</p>
             <Link to="/support">Liên hệ & hỗ trợ</Link>
-            <p>Thông tin liên hệ đang cập nhật</p>
+            <p>Thông tin liên hệ :Hotline :1900583667 | Địa chỉ : 99 Hồ Đắc Di, Phường An Cựu ,TP Huế</p>
           </div>
         </div>
         <div className="footer-bottom">
