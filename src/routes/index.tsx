@@ -16,6 +16,7 @@ import { pageHead, products } from "@/lib/catalog";
 import hero from "@/assets/hero_pro.jpg";
 import modelPro from "@/assets/model_pro.jpg";
 import modelLite from "@/assets/model_lite.jpg";
+
 export const Route = createFileRoute("/")({
   head: () =>
     pageHead(
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/")({
     ),
   component: Home,
 });
+
 function Home() {
   return (
     <>
@@ -85,7 +87,7 @@ function Home() {
           </div>
           <div className="hero-bottom">
             <span>
-     01 <span className="mx-2">──────</span> 02
+              01 <span className="mx-2">──────</span> 02
             </span>
             <span className="flex items-center gap-2">
               CUỘN ĐỂ KHÁM PHÁ
@@ -94,6 +96,7 @@ function Home() {
           </div>
         </div>
       </section>
+
       <div className="benefits">
         <div className="container-main benefits-inner">
           {[
@@ -116,6 +119,7 @@ function Home() {
           ))}
         </div>
       </div>
+
       <section className="section container-main">
         <div className="section-top">
           <div>
@@ -137,6 +141,7 @@ function Home() {
           <LineCard line="lite" />
         </div>
       </section>
+
       <section className="section tech-band">
         <div className="container-main">
           <div className="section-top">
@@ -157,6 +162,7 @@ function Home() {
           <TechGrid />
         </div>
       </section>
+
       <section className="section container-main">
         <div className="section-top">
           <div>
@@ -178,6 +184,7 @@ function Home() {
             ))}
         </div>
       </section>
+
       <section className="section container-main pt-0">
         <div className="section-top">
           <div>
@@ -212,8 +219,6 @@ function Home() {
           </Link>
         </div>
       </section>
-              </div>
-      </section>
 
       {/* --- PHẦN ĐÁNH GIÁ KHÁCH HÀNG & LIÊN HỆ BỔ SUNG --- */}
       <section className="py-12 bg-slate-50 px-4 text-center my-8 rounded-2xl max-w-4xl mx-auto border border-slate-200">
@@ -236,5 +241,3 @@ function Home() {
     </>
   );
 }
-
-      
