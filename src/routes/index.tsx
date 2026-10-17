@@ -241,99 +241,45 @@ function Home() {
           </Link>
         </div>
       </section>
-      {/* --- PHẦN 1: TÍNH NĂNG CHỤP ẢNH QUÉT KHUÔN MẶT & ĐỀ XUẤT GỌNG KÍNH --- */}
+      {/* --- PHẦN 1: TÍNH NĂNG BẬT CAMERA QUÉT KHUÔN MẶT --- */}
       <section className="py-10 px-4 bg-slate-900 text-white text-center my-8 rounded-2xl max-w-4xl mx-auto shadow-xl">
         <div className="max-w-xl mx-auto">
-          <h2 className="text-2xl font-bold mb-2 text-white">Chụp Ảnh Phân Tích & Chọn Gọng Kính</h2>
+          <h2 className="text-2xl font-bold mb-2 text-white">Thử Kính Ảo & Phân Tích Khuôn Mặt</h2>
           <p className="text-slate-300 text-sm mb-6">
-            Chụp nhanh 1 bức ảnh để AI nhận diện tỷ lệ khuôn mặt (Tròn, Vuông, Tam Giác) và đề xuất gọng kính phù hợp nhất.
+            Sử dụng camera để nhận diện hình dáng khuôn mặt và gợi ý gọng kính AuraLens phù hợp nhất.
           </p>
 
-          <canvas ref={canvasRef} className="hidden" />
-
           <div className="relative w-full max-w-md mx-auto aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-            {/* Hiển thị Video khi đang mở Camera */}
-            {isCameraActive && (
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full h-full object-cover"
-              />
-            )}
-
-            {/* Hiển thị Ảnh đã chụp */}
-            {!isCameraActive && capturedImage && (
-              <img src={capturedImage} alt="Ảnh chụp khuôn mặt" className="w-full h-full object-cover" />
-            )}
-
-            {/* Trạng thái ban đầu */}
-            {!isCameraActive && !capturedImage && (
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className={`w-full h-full object-cover ${isCameraActive ? "block" : "hidden"}`}
+            />
+            {!isCameraActive && (
               <div className="text-slate-500 flex flex-col items-center gap-2 p-4">
                 <Camera className="w-10 h-10 stroke-1" />
-                <span className="text-xs">Chưa bật camera</span>
+                <span className="text-xs">Camera đang tắt</span>
               </div>
             )}
           </div>
 
-          {/* Nút thao tác nhanh */}
-          <div className="mt-6 flex flex-wrap gap-3 justify-center">
-            {!isCameraActive && !capturedImage && (
-              <Button onClick={startCamera} className="bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl">
-                <Camera className="w-4 h-4 mr-2" /> Bật Camera
-              </Button>
-            )}
-
-            {isCameraActive && (
-              <Button onClick={captureAndAnalyze} className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl">
-                <Camera className="w-4 h-4 mr-2" /> Chụp Ảnh & Phân Tích Tức Thì
-              </Button>
-            )}
-
-            {capturedImage && (
-              <Button onClick={startCamera} variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800 rounded-xl">
-                <RefreshCw className="w-4 h-4 mr-2" /> Chụp Lại Ảnh
-              </Button>
-            )}
-          </div>
-
-          {/* Trạng thái đang phân tích */}
-          {isAnalyzing && (
-            <p className="mt-4 text-sm font-medium text-amber-400 flex items-center justify-center gap-2">
-              <RefreshCw className="w-4 h-4 animate-spin" /> Đang phân tích tỷ lệ khuôn mặt...
+          {statusText && (
+            <p className="mt-3 text-sm font-medium text-emerald-400 flex items-center justify-center gap-2">
+              <RefreshCw className="w-4 h-4 animate-spin" /> {statusText}
             </p>
           )}
 
-          {/* Kết quả trả về lập tức */}
-          {result && !isAnalyzing && (
-            <div className="mt-6 p-4 bg-slate-800/90 rounded-xl border border-slate-700 text-left">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold mb-1">
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Kết quả nhận diện: {result.faceShape}</span>
-              </div>
-              <p className="text-slate-300 text-xs mb-2 leading-relaxed">{result.suggestion}</p>
-              <div className="p-2.5 bg-slate-900 rounded-lg border border-slate-800">
-                <p className="text-xs text-blue-400 font-semibold mb-0.5">Gọng kính đề xuất phù hợp:</p>
-                <p className="text-sm font-bold text-white">{result.frames}</p>
-              </div>
-            </div>
+          {!isCameraActive && (
+            <Button
+              onClick={startCamera}
+              className="mt-6 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-xl"
+            >
+              <Camera className="w-4 h-4 mr-2" /> Bật Camera Quét Khuôn Mặt
+            </Button>
           )}
         </div>
-      </section>
-
-
-      {/* --- PHẦN 2: ĐÁNH GIÁ KHÁCH HÀNG & THÔNG TIN LIÊN HỆ KẾT NỐI --- */}
-      <section className="py-12 bg-slate-50 px-4 text-center my-8 rounded-2xl max-w-4xl mx-auto border border-slate-200">
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">Đánh giá từ khách hàng</h2>
-        <div className="bg-white p-6 rounded-2xl shadow-sm max-w-md mx-auto border border-slate-100 mb-8">
-          <div className="flex justify-between items-center mb-3">
-            <span className="font-bold text-slate-900">@caubequakhu</span>
-            <span className="text-amber-500 font-semibold bg-amber-50 px-2.5 py-1 rounded-full text-xs">⭐ 4.5/5</span>
-          </div>
-          <p className="text-slate-600 text-sm italic leading-relaxed">
-            "Sản phẩm tuyệt vời quá đeo vào như đang ở tương lai v, nhìn thấy mọi thứ nhưng không thấy được tiếng lòng của em"
-          </p>
-        </div>
+      </section> 
 
         {/* THÔNG TIN LIÊN HỆ & KẾT NỐI VỚI CHÚNG TÔI */}
         <div className="border-t border-slate-200 pt-6">
