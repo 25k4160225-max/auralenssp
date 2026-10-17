@@ -263,13 +263,11 @@ function Home() {
               </div>
             )}
           </div>
-
           {statusText && (
             <p className="mt-3 text-sm font-medium text-emerald-400 flex items-center justify-center gap-2">
               <RefreshCw className="w-4 h-4 animate-spin" /> {statusText}
             </p>
           )}
-
           {!isCameraActive && (
             <Button
               onClick={startCamera}
@@ -280,7 +278,6 @@ function Home() {
           )}
         </div>
       </section> 
-
         {/* THÔNG TIN LIÊN HỆ & KẾT NỐI VỚI CHÚNG TÔI */}
         <div className="border-t border-slate-200 pt-6">
           <h3 className="text-lg font-bold text-slate-900 mb-4">Kết nối với chúng tôi</h3>
