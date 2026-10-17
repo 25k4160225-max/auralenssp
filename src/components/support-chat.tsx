@@ -16,7 +16,9 @@ import {
   PromptInputSubmit,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
+
 const transport = new DefaultChatTransport({ api: "/api/support" });
+
 export function SupportChat() {
   const [open, setOpen] = useState(false);
   return (
@@ -32,14 +34,18 @@ export function SupportChat() {
     </>
   );
 }
+
 function ChatPanel({ close }: { close: () => void }) {
-  const { messages, sendMessage, status, error, stop } = useChat({ transport });
+  // Lấy thêm hàm setMessages để can thiệp trực tiếp vào luồng chat
+  const { messages, setMessages, sendMessage, status, error, stop } = useChat({ transport });
   const [text, setText] = useState("");
   const ref = useRef<HTMLTextAreaElement>(null);
   const busy = status === "submitted" || status === "streaming";
+
   useEffect(() => {
     if (!busy) ref.current?.focus();
   }, [busy]);
+
   return (
     <section className="chat-panel" aria-label="Aura AI">
       <div className="chat-head">
@@ -72,7 +78,17 @@ function ChatPanel({ close }: { close: () => void }) {
                   variant="outline"
                   size="sm"
                   className="text-[10px] whitespace-normal h-auto py-2"
-                  onClick={() => sendMessage({ text: t })}
+                  onClick={() => {
+                    // Xử lý nút bấm gợi ý cũng áp dụng logic check từ khóa
+                    const userText = t.toLowerCase();
+                    if (userText.includes("mã giảm giá") || userText.includes("khuyến mãi")) {
+                      const newUserMsg = { id: Date.now().toString(), role: "user" as const, content: t, parts: [{ type: "text", text: t }] };
+                      const newBotMsg = { id: (Date.now() + 1).toString(), role: "assistant" as const, content: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%", parts: [{ type: "text", text: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%" }] };
+                      setMessages([...messages, newUserMsg, newBotMsg]);
+                    } else {
+                      sendMessage({ text: t });
+                    }
+                  }}
                 >
                   {t}
                 </Button>
@@ -82,7 +98,8 @@ function ChatPanel({ close }: { close: () => void }) {
           {messages.map((m) => (
             <Message key={m.id} from={m.role}>
               <MessageContent>
-                {m.parts.map((part, i) =>
+                {/* Fallback rendering trong trường hợp parts không tồn tại (do tự chèn frontend) */}
+                {m.parts ? m.parts.map((part, i) =>
                   part.type === "text" ? (
                     <MessageResponse key={i}>{part.text}</MessageResponse>
                   ) : part.type === "reasoning" ? (
@@ -91,6 +108,8 @@ function ChatPanel({ close }: { close: () => void }) {
                       <MessageResponse>{part.text}</MessageResponse>
                     </details>
                   ) : null,
+                ) : (
+                  <MessageResponse>{m.content}</MessageResponse>
                 )}
               </MessageContent>
             </Message>
@@ -110,6 +129,31 @@ function ChatPanel({ close }: { close: () => void }) {
         <PromptInput
           onSubmit={({ text: submitted }) => {
             if (!submitted.trim() || busy) return;
+
+            const userText = submitted.toLowerCase();
+
+            // KỊCH BẢN ĐỊNH TUYẾN: Check từ khóa ưu đãi trước khi gọi API
+            if (userText.includes("mã giảm giá") || userText.includes("khuyến mãi") || userText.includes("voucher")) {
+              const newUserMsg = {
+                id: Date.now().toString(),
+                role: "user" as const,
+                content: submitted,
+                parts: [{ type: "text", text: submitted }]
+              };
+              const newBotMsg = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant" as const,
+                content: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%",
+                parts: [{ type: "text", text: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%" }]
+              };
+
+              setMessages([...messages, newUserMsg, newBotMsg]);
+              setText("");
+              ref.current?.focus();
+              return; // Chặn ở đây, không gọi sendMessage lên server nữa
+            }
+
+            // Nếu hỏi bình thường thì gọi AI
             sendMessage({ text: submitted });
             setText("");
             ref.current?.focus();
