@@ -17,6 +17,7 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 
+// Vẫn giữ transport nhưng ta sẽ không dùng sendMessage của nó nữa để tránh lỗi API đỏ
 const transport = new DefaultChatTransport({ api: "/api/support" });
 
 export function SupportChat() {
@@ -36,15 +37,62 @@ export function SupportChat() {
 }
 
 function ChatPanel({ close }: { close: () => void }) {
-  // Lấy thêm hàm setMessages để can thiệp trực tiếp vào luồng chat
-  const { messages, setMessages, sendMessage, status, error, stop } = useChat({ transport });
+  const { messages, setMessages, status, stop } = useChat({ transport });
   const [text, setText] = useState("");
+  // Thêm state giả lập trạng thái đang gõ
+  const [isTyping, setIsTyping] = useState(false);
   const ref = useRef<HTMLTextAreaElement>(null);
-  const busy = status === "submitted" || status === "streaming";
+  
+  const busy = isTyping;
 
   useEffect(() => {
     if (!busy) ref.current?.focus();
   }, [busy]);
+
+  // Hàm xử lý AI giả lập (Mock AI)
+  const handleFakeAI = (userText: string) => {
+    if (!userText.trim() || busy) return;
+
+    // 1. In tin nhắn của người dùng ra màn hình
+    const newUserMsg = {
+      id: Date.now().toString(),
+      role: "user" as const,
+      content: userText,
+      parts: [{ type: "text", text: userText }]
+    };
+    
+    setMessages(prev => [...prev, newUserMsg]);
+    setText("");
+    setIsTyping(true); // Hiện hiệu ứng AI đang suy nghĩ
+
+    // 2. Chuẩn bị câu trả lời dựa trên từ khóa (Không cần gọi Server)
+    setTimeout(() => {
+      let botResponse = "Dạ, hiện tại em là phiên bản trợ lý ảo Demo. Để được tư vấn chuyên sâu về thông số kỹ thuật của kính, anh/chị vui lòng liên hệ Hotline 1900583667 nhé!";
+      
+      const lowerText = userText.toLowerCase();
+
+      if (lowerText.includes("mã giảm giá") || lowerText.includes("khuyến mãi") || lowerText.includes("voucher")) {
+        botResponse = "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%";
+      } else if (lowerText.includes("pro và lite") || lowerText.includes("khác nhau")) {
+        botResponse = "Dạ, bản Pro được trang bị đầy đủ công nghệ LiDAR và dịch thuật AR phù hợp cho công việc. Bản Lite thì có thiết kế trong suốt tinh giản, siêu nhẹ, thiên về thời trang làm đẹp ạ.";
+      } else if (lowerText.includes("chào")) {
+        botResponse = "Dạ chào bạn! Mình là Aura AI, bạn cần mình hỗ trợ thông tin gì về kính thông minh AuraLens ạ?";
+      } else if (lowerText.includes("đo độ") || lowerText.includes("cận")) {
+        botResponse = "Dạ, kính AuraLens sẽ tự động tinh chỉnh tiêu cự liên tục dựa trên khoảng cách vật thể bạn nhìn, bạn chỉ cần chọn khoảng độ cận của mình khi đặt hàng là được ạ.";
+      }
+
+      const newBotMsg = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant" as const,
+        content: botResponse,
+        parts: [{ type: "text", text: botResponse }]
+      };
+
+      setMessages(prev => [...prev, newBotMsg]);
+      setIsTyping(false); // Tắt hiệu ứng suy nghĩ
+      ref.current?.focus();
+    }, 1500); // Giả lập độ trễ 1.5 giây cho giống AI thật đang chat
+  };
 
   return (
     <section className="chat-panel" aria-label="Aura AI">
@@ -65,8 +113,7 @@ function ChatPanel({ close }: { close: () => void }) {
           <Message from="assistant">
             <MessageContent>
               <MessageResponse>
-                Xin chào! Mình là Aura AI. Bạn thích hiệu năng toàn diện của Pro hay phong cách mảnh
-                nhẹ của Lite?
+                Xin chào! Mình là Aura AI. Bạn thích hiệu năng toàn diện của Pro hay phong cách mảnh nhẹ của Lite?
               </MessageResponse>
             </MessageContent>
           </Message>
@@ -78,17 +125,7 @@ function ChatPanel({ close }: { close: () => void }) {
                   variant="outline"
                   size="sm"
                   className="text-[10px] whitespace-normal h-auto py-2"
-                  onClick={() => {
-                    // Xử lý nút bấm gợi ý cũng áp dụng logic check từ khóa
-                    const userText = t.toLowerCase();
-                    if (userText.includes("mã giảm giá") || userText.includes("khuyến mãi")) {
-                      const newUserMsg = { id: Date.now().toString(), role: "user" as const, content: t, parts: [{ type: "text", text: t }] };
-                      const newBotMsg = { id: (Date.now() + 1).toString(), role: "assistant" as const, content: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%", parts: [{ type: "text", text: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%" }] };
-                      setMessages([...messages, newUserMsg, newBotMsg]);
-                    } else {
-                      sendMessage({ text: t });
-                    }
-                  }}
+                  onClick={() => handleFakeAI(t)}
                 >
                   {t}
                 </Button>
@@ -98,7 +135,6 @@ function ChatPanel({ close }: { close: () => void }) {
           {messages.map((m) => (
             <Message key={m.id} from={m.role}>
               <MessageContent>
-                {/* Fallback rendering trong trường hợp parts không tồn tại (do tự chèn frontend) */}
                 {m.parts ? m.parts.map((part, i) =>
                   part.type === "text" ? (
                     <MessageResponse key={i}>{part.text}</MessageResponse>
@@ -114,50 +150,22 @@ function ChatPanel({ close }: { close: () => void }) {
               </MessageContent>
             </Message>
           ))}
-          {status === "submitted" && (
+          
+          {/* Hiệu ứng đang gõ chữ */}
+          {isTyping && (
             <Message from="assistant">
               <MessageContent>
                 <Shimmer>Aura đang tìm câu trả lời…</Shimmer>
               </MessageContent>
             </Message>
           )}
-          {error && <p className="text-destructive text-xs leading-6">{error.message}</p>}
+
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
       <div className="chat-composer">
         <PromptInput
-          onSubmit={({ text: submitted }) => {
-            if (!submitted.trim() || busy) return;
-
-            const userText = submitted.toLowerCase();
-
-            // KỊCH BẢN ĐỊNH TUYẾN: Check từ khóa ưu đãi trước khi gọi API
-            if (userText.includes("mã giảm giá") || userText.includes("khuyến mãi") || userText.includes("voucher")) {
-              const newUserMsg = {
-                id: Date.now().toString(),
-                role: "user" as const,
-                content: submitted,
-                parts: [{ type: "text", text: submitted }]
-              };
-              const newBotMsg = {
-                id: (Date.now() + 1).toString(),
-                role: "assistant" as const,
-                content: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%",
-                parts: [{ type: "text", text: "Những sinh viên K59 HUE đăng nhập bằng email của trường sẽ được mã giám giá 15%" }]
-              };
-
-              setMessages([...messages, newUserMsg, newBotMsg]);
-              setText("");
-              ref.current?.focus();
-              return; // Chặn ở đây, không gọi sendMessage lên server nữa
-            }
-
-            // Nếu hỏi bình thường thì gọi AI
-            sendMessage({ text: submitted });
-            setText("");
-            ref.current?.focus();
-          }}
+          onSubmit={({ text: submitted }) => handleFakeAI(submitted)}
         >
           <PromptInputTextarea
             ref={ref}
